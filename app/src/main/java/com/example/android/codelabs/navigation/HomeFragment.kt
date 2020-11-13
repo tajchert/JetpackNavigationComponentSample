@@ -1,0 +1,90 @@
+/*
+ * Copyright (C) 2018 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.example.android.codelabs.navigation
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
+
+/**
+ * Fragment used to show how to navigate to another destination
+ */
+class HomeFragment : Fragment() {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
+        setHasOptionsMenu(true)
+        return inflater.inflate(R.layout.home_fragment, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val options = navOptions {
+            anim {
+                enter = R.anim.slide_in_right
+                exit = R.anim.slide_out_left
+                popEnter = R.anim.slide_in_left
+                popExit = R.anim.slide_out_right
+            }
+        }
+        view.findViewById<Button>(R.id.navigate_destination_button)?.setOnClickListener {
+            //Destination with options
+            findNavController().navigate(R.id.flow_step_one_dest, null, options)
+        }
+        //ClickListener
+        view.findViewById<Button>(R.id.navigate_action_button)?.setOnClickListener(
+                Navigation.createNavigateOnClickListener(R.id.next_action, null)
+        )
+//        view.findViewById<Button>(R.id.navigate_action_button)?.setOnClickListener{
+//            //Action, with arg
+//            val flowStepNumberArg = 1
+//            val action = HomeFragmentDirections.nextAction(flowStepNumberArg)
+//            findNavController().navigate(action)
+//        }
+
+        view.findViewById<Button>(R.id.navigate_profile)?.setOnClickListener {
+            //Action, no Args
+            findNavController().navigate(R.id.action_home_dest_to_profileFragment, null)
+        }
+        view.findViewById<Button>(R.id.navigate_activity)?.setOnClickListener {
+            findNavController().navigate(R.id.action_home_dest_to_secondaryActivity, null)
+        }
+        view.findViewById<Button>(R.id.navigate_directStepTwo)?.setOnClickListener {
+
+            //Action, with arg
+            val flowStepNumberArg = 1
+            val action = HomeFragmentDirections.nextAction(flowStepNumberArg)
+            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_home_dest_to_flow_step_two_dest, null)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+}
